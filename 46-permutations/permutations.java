@@ -1,39 +1,31 @@
 class Solution {
 
-    static void backtracking(int [] nums,List<List<Integer>> ans, List<Integer> path,boolean [] used)
-    {
-        if(path.size() == nums.length)
-        {
+    static void backtrack (int[] nums,List<List<Integer>> ans,
+     List<Integer> path,boolean [] used)
+     {
+         if(path.size()== nums.length)
+         {
             ans.add(new ArrayList<>(path));
-             return;
-        }
+            return;
+         }
+         for(int i=0;i<nums.length;i++)
+         {
+            if(used[i]==true){
+                continue;}
+         path.add(nums[i]);
+         used[i]=true;
+         backtrack(nums,ans,path,used);
+         used[i]=false;
+         path.remove(path.size()-1);
 
-        for(int i=0;i<nums.length;i++)
-        {
-           if(used[i] == true)
-           {
-            continue;
-           }
-            path.add(nums[i]);
-        used[i] = true;
-
-        backtracking(nums,ans,path,used);
-
-               used[i] = false;
-              path.remove(path.size() - 1);
-
-        }
-
-
-    }
+     }
+     }
     public List<List<Integer>> permute(int[] nums) {
-
         List<List<Integer>> ans= new ArrayList<>();
-        List<Integer> path= new ArrayList<>();
-          boolean [] used= new boolean[nums.length];
+        List<Integer> path = new ArrayList<>();
+         boolean [] used = new boolean[nums.length];
+         backtrack(nums, ans, path, used);
 
-        backtracking(nums,ans,path,used);
-        return ans;
-        
+         return ans;
     }
 }
