@@ -1,50 +1,49 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> ans= new ArrayList<>();
+Arrays.sort(nums);
+        for(int i=0;i<nums.length ;i++)
+        {
+             if(i >0 && nums[i]==nums[i-1])
+                {
+                    continue;
+                }
+            int l= i+1;
+            int r=nums.length-1;
+            while(l<r)
+            {
+               
+                int sum=nums[i] +nums[l] +nums[r];
+                if(sum==0)
+                {
+                            List<Integer> triplet = new ArrayList<>();
 
-      Arrays.sort(nums);
-        int n = nums.length;
-      for(int A=0;A<n-2;A++)
-     {
-        if (A > 0 && nums[A] == nums[A - 1]) {
-                continue;
+                    triplet.add(nums[i]);
+                     triplet.add(nums[l]);
+                     triplet.add(nums[r]);
+
+                    ans.add(triplet);
+                    l++;
+                    r--;
+                    while (l < r && nums[l] == nums[l - 1]) {
+                        l++;
+                    }
+
+                    while (l < r && nums[r] == nums[r + 1]) {
+                        r--;
+                    }
+                }
+
+               else if(sum > 0)
+                {
+                    r--;
+                }
+                else
+                {
+                    l++;
+                }
             }
-      int B=A+1;
-      int C=n-1;
-      while(B < C)
-       {
-         int sum= nums[A] + nums[B] + nums[C];
-
-         if(sum==0)
-         {
-                   List<Integer> triplet = new ArrayList<>();
-
-            triplet.add(nums[A]);
-           triplet.add(nums[B]);
-           triplet.add(nums[C]);
-            result.add(triplet);
-            B++;
-            C--;
-            while (B < C && nums[B] == nums[B - 1]) {
-                        B++;
-                    }
-
-                    // Skip duplicate C
-                    while (B < C && nums[C] == nums[C + 1]) {
-                        C--;
-                    }
-         }
-         else if(sum <0)
-         {
-            B++;
-         }
-         else
-         {
-            C--;
-         }
         }
-     }
-   
-   return result;  
-}
+        return ans;
+    }
 }
