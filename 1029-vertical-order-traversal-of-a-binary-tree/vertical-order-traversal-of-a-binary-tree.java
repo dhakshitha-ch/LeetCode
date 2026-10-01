@@ -1,68 +1,49 @@
 class Solution {
 
-    class Tuple {
-        TreeNode node;
-        int row;
-        int col;
+    static class Pair{
+        int row,col,val;
 
-        Tuple(TreeNode node, int row, int col) {
-            this.node = node;
-            this.row = row;
-            this.col = col;
+        public Pair(int row,int col,int val){
+           this.row=row;
+           this.col=col;
+           this.val=val;
         }
     }
 
+    List<Pair> pairs;
     public List<List<Integer>> verticalTraversal(TreeNode root) {
+        pairs=new ArrayList<>();
+        dfs(root,0,0);
 
-        List<List<Integer>> ans = new ArrayList<>();
+        Collections.sort(pairs,(a,b)->{
+            if(a.col!=b.col) return Integer.compare(a.col,b.col);
+            if(a.row!=b.row) return Integer.compare(a.row,b.row);
 
-        if (root == null) {
-            return ans;
-        }
+            return Integer.compare(a.val,b.val);
+        });
 
-        Map<Integer, Map<Integer, List<Integer>>> map = new TreeMap<>();
-
-        Queue<Tuple> q = new LinkedList<>();
-
-        q.offer(new Tuple(root, 0, 0));
-
-        while (!q.isEmpty()) {
-
-            Tuple current = q.poll();
-
-            TreeNode node = current.node;
-            int row = current.row;
-            int col = current.col;
-
-            map.putIfAbsent(col, new TreeMap<>());
-
-            map.get(col).putIfAbsent(row, new ArrayList<>());
-
-            map.get(col).get(row).add(node.val);
-
-            if (node.left != null) {
-                q.offer(new Tuple(node.left, row + 1, col - 1));
+        int previous=Integer.MIN_VALUE;
+        int size=-1;
+        List<List<Integer>> ans=new ArrayList<>();
+        
+        for(Pair pair:pairs){
+            if(pair.col!=previous){
+                ans.add(new ArrayList<>());
+                size++;
+                previous=pair.col;
             }
 
-            if (node.right != null) {
-                q.offer(new Tuple(node.right, row + 1, col + 1));
-            }
+            ans.get(size).add(pair.val);
         }
-
-        for (Map<Integer, List<Integer>> rows : map.values()) {
-
-            List<Integer> column = new ArrayList<>();
-
-            for (List<Integer> values : rows.values()) {
-
-                Collections.sort(values);
-
-                column.addAll(values);
-            }
-
-            ans.add(column);
-        }
-
+       
         return ans;
+    }
+    private void dfs(TreeNode root,int row,int col){
+        if(root==null) return;
+
+        pairs.add(new Pair(row,col,root.val));
+
+        dfs(root.left,row+1,col-1);
+        dfs(root.right,row+1,col+1);
     }
 }
