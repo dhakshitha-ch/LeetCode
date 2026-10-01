@@ -1,49 +1,69 @@
 class Solution {
 
-    static class Pair{
-        int row,col,val;
+    class Tuple {
+        TreeNode node;
+        int col;
+        int row;
 
-        public Pair(int row,int col,int val){
-           this.row=row;
-           this.col=col;
-           this.val=val;
+        public Tuple(TreeNode node, int col, int row) {
+            this.node = node;
+            this.col = col;
+            this.row = row;
         }
     }
 
-    List<Pair> pairs;
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        pairs=new ArrayList<>();
-        dfs(root,0,0);
 
-        Collections.sort(pairs,(a,b)->{
-            if(a.col!=b.col) return Integer.compare(a.col,b.col);
-            if(a.row!=b.row) return Integer.compare(a.row,b.row);
+        TreeMap<Integer, TreeMap<Integer, PriorityQueue<Integer>>> map
+            = new TreeMap<>();
 
-            return Integer.compare(a.val,b.val);
-        });
+        Queue<Tuple> q = new LinkedList<>();
 
-        int previous=Integer.MIN_VALUE;
-        int size=-1;
-        List<List<Integer>> ans=new ArrayList<>();
-        
-        for(Pair pair:pairs){
-            if(pair.col!=previous){
-                ans.add(new ArrayList<>());
-                size++;
-                previous=pair.col;
+        q.offer(new Tuple(root, 0, 0));
+
+        while (!q.isEmpty()) {
+
+            Tuple tuple = q.poll();
+
+            TreeNode node = tuple.node;
+            int col = tuple.col;
+            int row = tuple.row;
+
+            if (!map.containsKey(col)) {
+                map.put(col, new TreeMap<>());
             }
 
-            ans.get(size).add(pair.val);
+            if (!map.get(col).containsKey(row)) {
+                map.get(col).put(row, new PriorityQueue<>());
+            }
+
+            map.get(col).get(row).offer(node.val);
+
+            if (node.left != null) {
+                q.offer(new Tuple(node.left, col - 1, row + 1));
+            }
+
+            if (node.right != null) {
+                q.offer(new Tuple(node.right, col + 1, row + 1));
+            }
         }
-       
+
+        List<List<Integer>> ans = new ArrayList<>();
+
+        for (TreeMap<Integer, PriorityQueue<Integer>> rows : map.values()) {
+
+            List<Integer> column = new ArrayList<>();
+
+            for (PriorityQueue<Integer> nodes : rows.values()) {
+
+                while (!nodes.isEmpty()) {
+                    column.add(nodes.poll());
+                }
+            }
+
+            ans.add(column);
+        }
+
         return ans;
-    }
-    private void dfs(TreeNode root,int row,int col){
-        if(root==null) return;
-
-        pairs.add(new Pair(row,col,root.val));
-
-        dfs(root.left,row+1,col-1);
-        dfs(root.right,row+1,col+1);
     }
 }
