@@ -1,50 +1,78 @@
+
 class Solution {
-    void bfs(char [][] grid , boolean [][] visited,int row,int col)
-    {
-        Queue<int[]> q= new LinkedList<>();
-        q.add(new int[] {row,col});
-        visited[row][col]=true;
-        int [] delRow={-1,1,0,0};
-        int[] delCol={0,0,-1,1};
-        while(!q.isEmpty())
-        {
-            int[] cell=q.poll();
-            int r = cell[0];
-            int c = cell[1];
 
-            for (int i = 0; i < 4; i++) {
+    // Helper class to store coordinates
+    class Pair {
+        int first, second;
 
-                int newRow = r + delRow[i];
-                int newCol = c + delCol[i];
-
-                if (newRow >= 0 && newRow < grid.length &&
-                    newCol >= 0 && newCol < grid[0].length &&
-                    grid[newRow][newCol] == '1' &&
-                    !visited[newRow][newCol]) {
-
-                    visited[newRow][newCol] = true;
-                    q.add(new int[]{newRow, newCol});
-                }
-            }
-            
+        public Pair(int first, int second) {
+            this.first = first;
+            this.second = second;
         }
     }
+
     public int numIslands(char[][] grid) {
+
         int n = grid.length;
         int m = grid[0].length;
-        boolean[][] visited = new boolean[n][m];
-        int count=0;
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<m;j++)
-            {
-                if(grid[i][j] =='1' && !visited[i][j])
-                {
+
+        int[][] visited = new int[n][m];
+
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                if (visited[i][j] == 0 && grid[i][j] == '1') {
                     count++;
-                    bfs(grid, visited,i,j);
+                    bfs(i, j, visited, grid);
                 }
             }
         }
+
         return count;
+    }
+
+    private void bfs(int ro, int co, int[][] visited, char[][] grid) {
+
+        visited[ro][co] = 1;
+
+        Queue<Pair> q = new LinkedList<>();
+
+        q.add(new Pair(ro, co));
+
+        int n = grid.length;
+        int m = grid[0].length;
+
+        while (!q.isEmpty()) {
+
+            int row = q.peek().first;
+            int col = q.peek().second;
+
+            q.remove();
+
+            // Traverse in all 4 directions
+            for (int delRow = -1; delRow <= 1; delRow++) {
+                for (int delCol = -1; delCol <= 1; delCol++) {
+
+                    // Skip diagonal and current cell
+                    if (Math.abs(delRow) + Math.abs(delCol) != 1) {
+                        continue;
+                    }
+
+                    int nrow = row + delRow;
+                    int ncol = col + delCol;
+
+                    if (nrow >= 0 && nrow < n &&
+                        ncol >= 0 && ncol < m &&
+                        grid[nrow][ncol] == '1' &&
+                        visited[nrow][ncol] == 0) {
+
+                        visited[nrow][ncol] = 1;
+                        q.add(new Pair(nrow, ncol));
+                    }
+                }
+            }
+        }
     }
 }
