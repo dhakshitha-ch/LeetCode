@@ -10,8 +10,7 @@ class Solution {
         maxAvg = avg;
          for(int i=k;i<nums.length;i++)
          {
-             sum = sum - nums[i-k];
-             sum+=nums[i];
+             sum = sum - nums[i-k] + nums[i];
              avg = sum/k;
             maxAvg = Math.max(maxAvg, avg);
          }
